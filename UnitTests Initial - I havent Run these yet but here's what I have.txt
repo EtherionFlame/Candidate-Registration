@@ -1,0 +1,81 @@
+import unittest
+import os
+from your_module_name import (
+    CSVFileParser,
+    JSONFileParser,
+    TextFileParser,
+    MongoDBWriter,
+    Candidate,
+)
+
+class TestFileParsers(unittest.TestCase):
+
+    def setUp(self):
+        # Create instances of parsing strategies
+        self.csv_parser = CSVFileParser()
+        self.json_parser = JSONFileParser()
+        self.txt_parser = TextFileParser()
+        self.mongodb_writer = MongoDBWriter()
+
+        # Create an instance of the context class (Candidate)
+        self.candidate = Candidate(
+            first_name="John",
+            last_name="Doe",
+            DOB="1990-01-01",
+            party="Independent",
+            SOC="123-45-6789",
+            position="Senator",
+        )
+
+        # Set up a file path
+        self.file_path = "Sheet1.csv"
+
+    def test_csv_file_parser(self):
+        # Assume the file exists for testing
+        self.assertTrue(os.path.isfile(self.file_path))
+
+        # Parse a CSV file using the CSVFileParser
+        csv_data = self.csv_parser.parse_file(self.file_path)
+
+        # Ensure the parsed data is a list
+        self.assertIsInstance(csv_data, list)
+
+    def test_json_file_parser(self):
+        # Assume the file exists for testing
+        self.assertTrue(os.path.isfile(self.file_path))
+
+        # Parse a JSON file using the JSONFileParser
+        json_data = self.json_parser.parse_file(self.file_path)
+
+        # Ensure the parsed data is a list
+        self.assertIsInstance(json_data, list)
+
+    def test_text_file_parser(self):
+        # Assume the file exists for testing
+        self.assertTrue(os.path.isfile(self.file_path))
+
+        # Parse a text file using the TextFileParser
+        txt_data = self.txt_parser.parse_file(self.file_path)
+
+        # Ensure the parsed data is a list
+        self.assertIsInstance(txt_data, list)
+
+    def test_mongodb_writer(self):
+        # Set the parsing strategy to MongoDBWriter
+        self.candidate.set_parser(self.mongodb_writer)
+
+        # Assume candidates data is a list of Candidate objects
+        candidates_data = [Candidate(...), Candidate(...)]
+
+        # Write candidates data to MongoDB
+        self.mongodb_writer.write_candidates_to_mongodb(candidates_data)
+
+        # Add additional assertions as needed
+
+    def test_candidate_without_parser(self):
+        # Attempt to parse a file without setting a parser
+        with self.assertRaises(ValueError):
+            self.candidate.parse_file(self.file_path)
+
+if __name__ == "__main__":
+    unittest.main()
